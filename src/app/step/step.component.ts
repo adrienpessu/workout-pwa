@@ -53,7 +53,7 @@ export class StepComponent implements OnInit, OnDestroy {
         const time = currentStep.duration;
         this.countDownStart = time;
         this.stepLabel = currentStep.title;
-        if (this.currentStepIndex < this.numberOfSteps) {
+        if (this.currentStepIndex <= this.numberOfSteps) {
           this.subscriptions.push(interval(1000)
             .pipe(take(time),
               map((v) => (time - 1) - v))
