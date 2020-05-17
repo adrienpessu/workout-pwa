@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {map, switchMap, take} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
 import {StepsService} from '../shared/service/steps.service';
-import {interval, of} from 'rxjs';
+import {interval, of, Subscription} from 'rxjs';
 import {ErrorService} from '../shared/service/error.service';
 
 @Component({
@@ -10,7 +10,9 @@ import {ErrorService} from '../shared/service/error.service';
   templateUrl: './step.component.html',
   styleUrls: ['./step.component.scss']
 })
-export class StepComponent implements OnInit {
+export class StepComponent implements OnInit, OnDestroy {
+
+  subscriptions: Subscription[] = [];
 
   stepLabel: string;
   countDownStart: number;
@@ -19,11 +21,15 @@ export class StepComponent implements OnInit {
   numberOfSteps: number;
   started = false;
 
+  public audio: HTMLAudioElement;
+
   constructor(
     private errorService: ErrorService,
     private route: ActivatedRoute,
     public router: Router,
     private stepsService: StepsService) {
+    this.audio = new Audio();
+    this.audio.src = '../../../assets/sounds/mario.mp3';
   }
 
   ngOnInit(): void {
@@ -48,20 +54,25 @@ export class StepComponent implements OnInit {
         this.countDownStart = time;
         this.stepLabel = currentStep.title;
         if (this.currentStepIndex < this.numberOfSteps) {
-          interval(1000)
+          this.subscriptions.push(interval(1000)
             .pipe(take(time),
               map((v) => (time - 1) - v))
             .subscribe((v) => {
               this.countDownStart = v;
               if (v === 0) {
                 this.currentStepIndex++;
-                this.router.navigate(['/' + +this.currentStepIndex]);
+                this.audio.load();
+                this.audio.play().then(response => this.router.navigate(['/' + +this.currentStepIndex]));
               }
-            });
+            }));
         }
       }
 
     }, error => this.errorService.openSnackBar());
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
 }
