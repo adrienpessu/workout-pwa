@@ -49,11 +49,11 @@ export class StepComponent implements OnInit, OnDestroy {
         const steps = this.stepsService.getSteps();
         this.numberOfSteps = steps.length;
         this.currentStepIndex = result;
-        const currentStep = steps[result - 1];
-        const time = currentStep.duration;
-        this.countDownStart = time;
-        this.stepLabel = currentStep.title;
         if (this.currentStepIndex <= this.numberOfSteps) {
+          const currentStep = steps[result - 1];
+          const time = currentStep.duration;
+          this.countDownStart = time;
+          this.stepLabel = currentStep.title;
           this.subscriptions.push(interval(1000)
             .pipe(take(time),
               map((v) => (time - 1) - v))

@@ -2,18 +2,18 @@
   <!-- Toolbar -->
   <div class="header" role="banner">
     <img routerLink="/"
-      width="40"
-      alt=" Logo"
-      src="assets/icons/sports-24px.svg"
+         width="40"
+         alt=" Logo"
+         src="assets/icons/sports-24px.svg"
     />
     <h1 routerLink="/">Workout</h1>
   </div>
 
   <div class="content" role="main">
-    <ng-container *ngIf="started && currentStepIndex === numberOfSteps">
+    <ng-container *ngIf="started && (currentStepIndex - 1) === numberOfSteps">
       <p>That all folks!</p>
     </ng-container>
-    <ng-container *ngIf="started && currentStepIndex !== numberOfSteps">
+    <ng-container *ngIf="started && currentStepIndex <= numberOfSteps">
       <span> {{countDownStart}} s.</span>
       <p> {{ stepLabel }} </p>
     </ng-container>
@@ -24,8 +24,10 @@
   </div>
 
   <div class="footer">
-    <a href="#" aria-label="Start" *ngIf="!started || currentStepIndex === numberOfSteps " routerLink="/1" class="myButton">C'est parti...</a>
-    <a href="#" aria-label="Next" (click)="ngOnDestroy()" *ngIf="started && currentStepIndex !== numberOfSteps " [routerLink]="'/' + (currentStepIndex+1)" class="myButton">Étape suivante</a>
+    <a href="#" aria-label="Start" *ngIf="!started || (currentStepIndex - 1) === numberOfSteps " routerLink="/1"
+       class="myButton">C'est parti...</a>
+    <a href="#" aria-label="Next" (click)="ngOnDestroy()" *ngIf="started && currentStepIndex <= numberOfSteps "
+       [routerLink]="'/' + (currentStepIndex+1)" class="myButton">Étape suivante</a>
   </div>
 
 </div>
