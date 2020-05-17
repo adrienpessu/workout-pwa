@@ -24,8 +24,8 @@
   </div>
 
   <div class="footer">
-    <a href="#" aria-label="Start" *ngIf="!started || currentStepIndex === numberOfSteps " routerLink="/1" class="myButton">Start</a>
-    <a href="#" aria-label="Next" *ngIf="started && currentStepIndex !== numberOfSteps " [routerLink]="'/' + currentStepIndex+1" class="myButton">Next</a>
+    <a href="#" aria-label="Start" *ngIf="!started || currentStepIndex === numberOfSteps " routerLink="/1" class="myButton">Start working out</a>
+    <a href="#" aria-label="Next" *ngIf="started && currentStepIndex !== numberOfSteps " [routerLink]="'/' + currentStepIndex+1" class="myButton">Next step</a>
   </div>
 
 </div>
