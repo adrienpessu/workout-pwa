@@ -1,11 +1,11 @@
 {
-  "name": "workout-pwa",
-  "short_name": "workout-pwa",
+  "name": "Workout",
+  "short_name": "Workout",
   "theme_color": "#1976d2",
-  "background_color": "#fafafa",
+  "background_color": "#ffffff",
   "display": "standalone",
-  "scope": "./",
-  "start_url": "./",
+  "scope": "/",
+  "start_url": "/",
   "icons": [
     {
         "src": "/android-chrome-192x192.png",

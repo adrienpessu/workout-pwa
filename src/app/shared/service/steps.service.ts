@@ -11,7 +11,7 @@ export class StepsService {
   getSteps() {
     return [
       {
-        duration: 3,
+        duration: 60,
         title: 'Planche'
       },
       {
