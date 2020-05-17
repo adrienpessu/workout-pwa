@@ -15,6 +15,7 @@ export class StepComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   stepLabel: string;
+  nextStepLabel: string;
   countDownStart: number;
 
   currentStepIndex: number;
@@ -54,6 +55,12 @@ export class StepComponent implements OnInit, OnDestroy {
           const time = currentStep.duration;
           this.countDownStart = time;
           this.stepLabel = currentStep.title;
+          if (steps[result] && steps[result].title) {
+            this.nextStepLabel = steps[result].title;
+          } else {
+            this.nextStepLabel = '';
+          }
+
           this.subscriptions.push(interval(1000)
             .pipe(take(time),
               map((v) => (time - 1) - v))
@@ -65,6 +72,8 @@ export class StepComponent implements OnInit, OnDestroy {
                 this.audio.play().then(response => this.router.navigate(['/' + +this.currentStepIndex]));
               }
             }));
+        } else {
+          this.nextStepLabel = '';
         }
       }
 

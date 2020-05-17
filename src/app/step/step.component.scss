@@ -26,13 +26,23 @@ div.app-container {
   height: 60px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background-color: $main-color;
   color: white;
   font-weight: 600;
 
-  img, h1 {
-    color: white;
-    cursor: pointer;
+  div {
+    display: flex;
+    align-items: center;
+
+    img, h1 {
+      color: white;
+      cursor: pointer;
+    }
+  }
+
+  p {
+    margin-right: 1rem;
   }
 }
 
@@ -53,6 +63,11 @@ div.content {
   p {
     color: $main-color;
     font-size: 4rem;
+    text-align: center;
+  }
+  p.small {
+    color: $main-color;
+    font-size: 2rem;
     text-align: center;
   }
 }

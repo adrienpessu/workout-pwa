@@ -1,12 +1,15 @@
 <div class="app-container">
   <!-- Toolbar -->
   <div class="header" role="banner">
-    <img routerLink="/"
-         width="40"
-         alt=" Logo"
-         src="assets/icons/sports-24px.svg"
-    />
-    <h1 routerLink="/">Workout</h1>
+    <div>
+      <img routerLink="/"
+           width="40"
+           alt=" Logo"
+           src="assets/icons/sports-24px.svg"
+      />
+      <h1 routerLink="/">Workout</h1>
+    </div>
+    <p>{{ currentStepIndex }} / {{ numberOfSteps }}</p>
   </div>
 
   <div class="content" role="main">
@@ -19,6 +22,9 @@
     </ng-container>
     <ng-container *ngIf="!started">
       <p>Let's go</p>
+    </ng-container>
+    <ng-container *ngIf="nextStepLabel">
+      <p class="small"><u>Prochaine étape</u> : {{ nextStepLabel }}</p>
     </ng-container>
 
   </div>
