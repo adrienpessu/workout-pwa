@@ -30,8 +30,9 @@ div.app-container {
   color: white;
   font-weight: 600;
 
-  img {
+  img, h1 {
     color: white;
+    cursor: pointer;
   }
 }
 
