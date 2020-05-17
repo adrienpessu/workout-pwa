@@ -9,7 +9,7 @@
       />
       <h1 routerLink="/">Workout</h1>
     </div>
-    <p>{{ currentStepIndex }} / {{ numberOfSteps }}</p>
+    <p *ngIf="numberOfSteps && currentStepIndex <= numberOfSteps">{{ currentStepIndex }} / {{ numberOfSteps }}</p>
   </div>
 
   <div class="content" role="main">
