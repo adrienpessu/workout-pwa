@@ -16,13 +16,14 @@
       <div class="left">
         <img src="../../assets/svg/replay.svg" aria-label="Next" *ngIf="started && currentStepIndex <= numberOfSteps "
              [routerLink]="'/'">
-        <img src="../../assets/svg/play.svg" aria-label="Start"
+        <img src="../../assets/svg/play.svg" (click)="ngOnDestroy()" aria-label="Start"
              *ngIf="!started || (currentStepIndex - 1) === numberOfSteps " routerLink="/1">
         <img src="../../assets/svg/skip_next.svg" aria-label="Start"
-             *ngIf="started && currentStepIndex <= numberOfSteps " [routerLink]="'/' + (currentStepIndex+1)">
+             *ngIf="started && currentStepIndex <= numberOfSteps " (click)="ngOnDestroy()"
+             [routerLink]="'/' + (currentStepIndex+1)">
         <img src="../../assets/svg/pause.svg" aria-label="Start"
              *ngIf="started && !paused" (click)="paused = !paused">
-        <img src="../../assets/svg/play.svg"  aria-label="Start"
+        <img src="../../assets/svg/play.svg" aria-label="Start"
              *ngIf="started && paused" (click)="paused = !paused">
       </div>
       <div class="right">
