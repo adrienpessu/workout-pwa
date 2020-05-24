@@ -46,7 +46,7 @@ export class StepComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.consecutiveDays = this.storageService.getConsecutiveDays();
-    this.subscriptions.push(this.route.paramMap.pipe(
+    this.route.paramMap.pipe(
       switchMap(params => {
         if (params.has('id')) {
           return of(+params.get('id'));
@@ -92,7 +92,7 @@ export class StepComponent implements OnInit, OnDestroy {
         }
       }
 
-    }, error => this.errorService.openSnackBar()));
+    }, error => this.errorService.openSnackBar());
   }
 
   private timer(time: number) {
