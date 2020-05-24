@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {filter, map, switchMap, take} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
 import {StepsService} from '../shared/service/steps.service';
-import {interval, of, Subscription} from 'rxjs';
+import {forkJoin, interval, of, Subscription} from 'rxjs';
 import {ErrorService} from '../shared/service/error.service';
 import {StorageService} from '../shared/service/storage.service';
 import {PrefsInterface} from '../shared/interface/prefs.interface';
@@ -44,7 +44,7 @@ export class StepComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(
+    this.subscriptions.push(this.route.paramMap.pipe(
       switchMap(params => {
         if (params.has('id')) {
           return of(+params.get('id'));
@@ -71,27 +71,39 @@ export class StepComponent implements OnInit, OnDestroy {
             this.nextStepLabel = '';
           }
 
-          this.subscriptions.push(interval(1000)
-            .pipe(filter(s => !this.paused), take(time),
-              map((v) => (time - 1) - v))
-            .subscribe((v) => {
-              this.countDownStart = v;
-              if (v === 0) {
-                this.currentStepIndex++;
-                this.endingAudio.load();
-                if (this.prefs.volumeOn) {
-                  this.endingAudio.play().then(response => this.router.navigate(['/' + +this.currentStepIndex]));
-                } else {
-                  this.router.navigate(['/' + +this.currentStepIndex]);
-                }
-              }
-            }));
+          if (currentStep.countdown) {
+            this.subscriptions.push(
+              forkJoin([this.startingAudio.play(), interval(1000).pipe(take(3))]).subscribe(s => {
+                this.timer(time);
+              })
+            );
+          } else {
+            this.timer(time);
+          }
         } else {
           this.nextStepLabel = '';
         }
       }
 
-    }, error => this.errorService.openSnackBar());
+    }, error => this.errorService.openSnackBar()));
+  }
+
+  private timer(time: number) {
+    this.subscriptions.push(interval(1000)
+      .pipe(filter(s => !this.paused), take(time),
+        map((v) => (time - 1) - v))
+      .subscribe((v) => {
+        this.countDownStart = v;
+        if (v === 0) {
+          this.currentStepIndex++;
+          this.endingAudio.load();
+          if (this.prefs.volumeOn) {
+            this.endingAudio.play().then(response => this.router.navigate(['/' + +this.currentStepIndex]));
+          } else {
+            this.router.navigate(['/' + +this.currentStepIndex]);
+          }
+        }
+      }));
   }
 
   ngOnDestroy(): void {
