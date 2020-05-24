@@ -23,6 +23,11 @@ div.app-container {
 }
 
 .header {
+  display: flex;
+  flex-direction: column;
+}
+
+.banner {
   height: 60px;
   display: flex;
   align-items: center;
@@ -30,6 +35,34 @@ div.app-container {
   background-color: $main-color;
   color: white;
   font-weight: 600;
+
+
+  &.main {
+    background-color: $main-color;
+    color: white;
+  }
+
+  &.second {
+    background-color: white;
+    color: $main-color;
+    border-color: $main-color;
+    border-style: solid;
+    border-width: thin;
+
+    div.left {
+      img {
+        margin-right: 1rem;
+      }
+    }
+    div.right {
+      img {
+        margin-left: 1rem;
+      }
+    }
+    img {
+      cursor: pointer;
+    }
+  }
 
   div {
     display: flex;

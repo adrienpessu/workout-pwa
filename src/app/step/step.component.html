@@ -1,15 +1,36 @@
 <div class="app-container">
   <!-- Toolbar -->
-  <div class="header" role="banner">
-    <div>
-      <img routerLink="/"
-           width="40"
-           alt=" Logo"
-           src="assets/icons/sports-24px.svg"
-      />
-      <h1 routerLink="/">Workout</h1>
+  <div class="header main" role="banner">
+    <div class="banner">
+      <div>
+        <img routerLink="/"
+             width="40"
+             alt=" Logo"
+             src="assets/icons/sports-24px.svg"
+        />
+        <h1 routerLink="/">Workout</h1>
+      </div>
+      <p *ngIf="numberOfSteps && currentStepIndex <= numberOfSteps">{{ currentStepIndex }} / {{ numberOfSteps }}</p>
     </div>
-    <p *ngIf="numberOfSteps && currentStepIndex <= numberOfSteps">{{ currentStepIndex }} / {{ numberOfSteps }}</p>
+    <div class="banner second">
+      <div class="left">
+        <img src="../../assets/svg/replay.svg" aria-label="Next" *ngIf="started && currentStepIndex <= numberOfSteps "
+             [routerLink]="'/'">
+        <img src="../../assets/svg/play.svg" aria-label="Start"
+             *ngIf="!started || (currentStepIndex - 1) === numberOfSteps " routerLink="/1">
+        <img src="../../assets/svg/skip_next.svg" aria-label="Start"
+             *ngIf="started && currentStepIndex <= numberOfSteps " [routerLink]="'/' + (currentStepIndex+1)">
+        <img src="../../assets/svg/pause.svg" aria-label="Start"
+             *ngIf="started && !paused" (click)="paused = !paused">
+        <img src="../../assets/svg/play.svg"  aria-label="Start"
+             *ngIf="started && paused" (click)="paused = !paused">
+      </div>
+      <div class="right">
+        <img src="../../assets/svg/update.svg" (click)="refresh()">
+        <img src="../../assets/svg/volume_down.svg" (click)="triggerVolume()" *ngIf="!prefs.volumeOn">
+        <img src="../../assets/svg/volume_off.svg" (click)="triggerVolume()" *ngIf="prefs.volumeOn">
+      </div>
+    </div>
   </div>
 
   <div class="content" role="main">
@@ -26,16 +47,5 @@
     <ng-container *ngIf="nextStepLabel">
       <p class="small"><u>Prochaine étape</u> : {{ nextStepLabel }}</p>
     </ng-container>
-
   </div>
-
-  <div class="footer">
-    <a href="#" aria-label="Start" *ngIf="!started || (currentStepIndex - 1) === numberOfSteps " routerLink="/1"
-       class="myButton">C'est parti...</a>
-    <a href="#" aria-label="Next" (click)="ngOnDestroy()" *ngIf="started && currentStepIndex <= numberOfSteps "
-       [routerLink]="'/' + (currentStepIndex+1)" class="myButton">Étape suivante</a>
-    <a href="#" aria-label="Next" (click)="ngOnDestroy()" *ngIf="started && currentStepIndex <= numberOfSteps "
-       [routerLink]="'/'" class="myButton">Recommencer</a>
-  </div>
-
 </div>

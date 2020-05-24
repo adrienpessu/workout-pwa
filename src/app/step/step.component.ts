@@ -1,9 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {map, switchMap, take} from 'rxjs/operators';
+import {filter, map, switchMap, take} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
 import {StepsService} from '../shared/service/steps.service';
 import {interval, of, Subscription} from 'rxjs';
 import {ErrorService} from '../shared/service/error.service';
+import {StorageService} from '../shared/service/storage.service';
+import {PrefsInterface} from '../shared/interface/prefs.interface';
 
 @Component({
   selector: 'app-step',
@@ -22,18 +24,29 @@ export class StepComponent implements OnInit, OnDestroy {
   numberOfSteps: number;
   started = false;
 
-  public audio: HTMLAudioElement;
+  paused = false;
+
+  prefs: PrefsInterface;
+
+  public endingAudio: HTMLAudioElement = new Audio();
+  public startingAudio: HTMLAudioElement = new Audio();
 
   constructor(
     private errorService: ErrorService,
     private route: ActivatedRoute,
     public router: Router,
-    private stepsService: StepsService) {
-    this.audio = new Audio();
-    this.audio.src = '../../../assets/sounds/mario.mp3';
+    private stepsService: StepsService,
+    private storageService: StorageService) {
+
+    this.prefs = this.storageService.getPrefs();
+    this.endingAudio.src = '../../../assets/sounds/mario.mp3';
+    this.startingAudio.src = '../../../assets/sounds/countdown.mp3';
+
+
   }
 
   ngOnInit(): void {
+
     this.route.paramMap.pipe(
       switchMap(params => {
         if (params.has('id')) {
@@ -62,14 +75,21 @@ export class StepComponent implements OnInit, OnDestroy {
           }
 
           this.subscriptions.push(interval(1000)
-            .pipe(take(time),
+            .pipe(filter(s => {
+              console.log(s);
+              return !this.paused;
+              }), take(time),
               map((v) => (time - 1) - v))
             .subscribe((v) => {
               this.countDownStart = v;
               if (v === 0) {
                 this.currentStepIndex++;
-                this.audio.load();
-                this.audio.play().then(response => this.router.navigate(['/' + +this.currentStepIndex]));
+                this.endingAudio.load();
+                if (this.prefs.volumeOn) {
+                  this.endingAudio.play().then(response => this.router.navigate(['/' + +this.currentStepIndex]));
+                } else {
+                  this.router.navigate(['/' + +this.currentStepIndex]);
+                }
               }
             }));
         } else {
@@ -82,6 +102,15 @@ export class StepComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
+  triggerVolume() {
+    this.prefs.volumeOn = !this.prefs.volumeOn;
+    this.storageService.setPrefs(this.prefs);
+  }
+
+  refresh() {
+    window.location.reload();
   }
 
 }
