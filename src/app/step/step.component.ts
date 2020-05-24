@@ -25,6 +25,7 @@ export class StepComponent implements OnInit, OnDestroy {
   started = false;
 
   paused = false;
+  consecutiveDays = 0;
 
   prefs: PrefsInterface;
 
@@ -44,6 +45,7 @@ export class StepComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.consecutiveDays = this.storageService.getConsecutiveDays();
     this.subscriptions.push(this.route.paramMap.pipe(
       switchMap(params => {
         if (params.has('id')) {
@@ -60,6 +62,11 @@ export class StepComponent implements OnInit, OnDestroy {
         const steps = this.stepsService.getSteps();
         this.numberOfSteps = steps.length;
         this.currentStepIndex = result;
+
+        if (this.started && (this.currentStepIndex - 1) === this.numberOfSteps) {
+          this.storageService.addConsecutiveDays();
+        }
+
         if (this.currentStepIndex <= this.numberOfSteps) {
           const currentStep = steps[result - 1];
           const time = currentStep.duration;
@@ -71,7 +78,7 @@ export class StepComponent implements OnInit, OnDestroy {
             this.nextStepLabel = '';
           }
 
-          if (currentStep.countdown) {
+          if (currentStep.countdown && this.prefs.volumeOn) {
             this.subscriptions.push(
               forkJoin([this.startingAudio.play(), interval(1000).pipe(take(3))]).subscribe(s => {
                 this.timer(time);

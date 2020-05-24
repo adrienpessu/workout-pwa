@@ -23,4 +23,37 @@ export class StorageService {
     localStorage.setItem('prefs', JSON.stringify(prefs));
   }
 
+  getConsecutiveDays() {
+    const item = localStorage.getItem('consecutive-days');
+    if (item && item.length > 0) {
+      const consecutiveDays = JSON.parse(item);
+      if (consecutiveDays.length > 0) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const last = new Date(consecutiveDays[length - 1]);
+        if (last.getDate() === yesterday.getDate() &&
+          last.getMonth() === yesterday.getMonth() &&
+          last.getFullYear() === yesterday.getFullYear()) {
+          return consecutiveDays.length;
+        } else {
+          localStorage.setItem('consecutive-days', JSON.stringify([]));
+        }
+      }
+    }
+    return 0;
+  }
+
+  addConsecutiveDays() {
+    const item = localStorage.getItem('consecutive-days');
+    let consecutiveDays = [];
+    if (item && item.length > 0) {
+      consecutiveDays = JSON.parse(item);
+      if (!consecutiveDays) {
+        consecutiveDays = [];
+      }
+      consecutiveDays.push(new Date());
+    }
+    localStorage.setItem('consecutive-days', JSON.stringify(consecutiveDays));
+  }
+
 }
