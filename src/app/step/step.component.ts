@@ -36,17 +36,14 @@ export class StepComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     public router: Router,
     private stepsService: StepsService,
-    private storageService: StorageService) {
-
+    private storageService: StorageService
+  ) {
     this.prefs = this.storageService.getPrefs();
     this.endingAudio.src = '../../../assets/sounds/mario.mp3';
     this.startingAudio.src = '../../../assets/sounds/countdown.mp3';
-
-
   }
 
   ngOnInit(): void {
-
     this.route.paramMap.pipe(
       switchMap(params => {
         if (params.has('id')) {
@@ -75,10 +72,7 @@ export class StepComponent implements OnInit, OnDestroy {
           }
 
           this.subscriptions.push(interval(1000)
-            .pipe(filter(s => {
-              console.log(s);
-              return !this.paused;
-              }), take(time),
+            .pipe(filter(s => !this.paused), take(time),
               map((v) => (time - 1) - v))
             .subscribe((v) => {
               this.countDownStart = v;
