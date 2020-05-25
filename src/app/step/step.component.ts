@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {filter, map, switchMap, take} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
 import {StepsService} from '../shared/service/steps.service';
-import {forkJoin, interval, of, Subscription} from 'rxjs';
+import {forkJoin, from, interval, of, Subscription} from 'rxjs';
 import {ErrorService} from '../shared/service/error.service';
 import {StorageService} from '../shared/service/storage.service';
 import {PrefsInterface} from '../shared/interface/prefs.interface';
@@ -79,11 +79,9 @@ export class StepComponent implements OnInit, OnDestroy {
           }
 
           if (currentStep.countdown && this.prefs.volumeOn) {
-            this.subscriptions.push(
-              forkJoin([this.startingAudio.play(), interval(1000).pipe(take(3))]).subscribe(s => {
-                this.timer(time);
-              })
-            );
+            forkJoin([this.startingAudio.play(), interval(1000).pipe(take(3))]).subscribe(s => {
+              this.timer(time);
+            });
           } else {
             this.timer(time);
           }
@@ -105,7 +103,7 @@ export class StepComponent implements OnInit, OnDestroy {
           this.currentStepIndex++;
           this.endingAudio.load();
           if (this.prefs.volumeOn) {
-            this.endingAudio.play().then(response => this.router.navigate(['/' + +this.currentStepIndex]));
+            from(this.endingAudio.play()).subscribe(response => this.router.navigate(['/' + +this.currentStepIndex]);
           } else {
             this.router.navigate(['/' + +this.currentStepIndex]);
           }
