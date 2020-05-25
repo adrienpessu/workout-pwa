@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {filter, map, switchMap, take} from 'rxjs/operators';
+import {filter, map, mergeMap, switchMap, take} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
 import {StepsService} from '../shared/service/steps.service';
-import {forkJoin, from, interval, of, Subscription} from 'rxjs';
+import {forkJoin, from, interval, of, ReplaySubject, Subscription} from 'rxjs';
 import {ErrorService} from '../shared/service/error.service';
 import {StorageService} from '../shared/service/storage.service';
 import {PrefsInterface} from '../shared/interface/prefs.interface';
@@ -28,6 +28,8 @@ export class StepComponent implements OnInit, OnDestroy {
   consecutiveDays = 0;
 
   prefs: PrefsInterface;
+
+  next = new ReplaySubject();
 
   public endingAudio: HTMLAudioElement = new Audio();
   public startingAudio: HTMLAudioElement = new Audio();
@@ -79,9 +81,7 @@ export class StepComponent implements OnInit, OnDestroy {
           }
 
           if (currentStep.countdown && this.prefs.volumeOn) {
-            forkJoin([this.startingAudio.play(), interval(1000).pipe(take(3))]).subscribe(s => {
-              this.timer(time);
-            });
+            this.next.next(time);
           } else {
             this.timer(time);
           }
@@ -91,6 +91,11 @@ export class StepComponent implements OnInit, OnDestroy {
       }
 
     }, error => this.errorService.openSnackBar());
+
+    this.next.pipe(
+      mergeMap(time => forkJoin([of(time), this.startingAudio.play(), interval(1000).pipe(take(3))]))
+    ).subscribe(time => this.timer(<number> time[0]));
+
   }
 
   private timer(time: number) {
