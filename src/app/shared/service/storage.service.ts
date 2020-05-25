@@ -35,8 +35,6 @@ export class StorageService {
           last.getMonth() === yesterday.getMonth() &&
           last.getFullYear() === yesterday.getFullYear()) {
           return consecutiveDays.length;
-        } else {
-          localStorage.setItem('consecutive-days', JSON.stringify([]));
         }
       }
     }
