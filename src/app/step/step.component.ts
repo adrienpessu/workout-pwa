@@ -103,7 +103,7 @@ export class StepComponent implements OnInit, OnDestroy {
           this.currentStepIndex++;
           this.endingAudio.load();
           if (this.prefs.volumeOn) {
-            from(this.endingAudio.play()).subscribe(response => this.router.navigate(['/' + +this.currentStepIndex]);
+            from(this.endingAudio.play()).subscribe(response => this.router.navigate(['/' + +this.currentStepIndex]));
           } else {
             this.router.navigate(['/' + +this.currentStepIndex]);
           }
