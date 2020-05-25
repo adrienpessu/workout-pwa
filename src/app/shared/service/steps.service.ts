@@ -8,7 +8,26 @@ export class StepsService {
   constructor() {
   }
 
+  getStepsDev() {
+    return [{
+      duration: 3,
+      title: 'Planche',
+      countdown: true
+    },
+      {
+        duration: 3,
+        title: 'Planche 2'
+      },
+      {
+        duration: 3,
+        title: 'étirement',
+        countdown: true
+      }];
+  }
+
   getSteps() {
+
+
     return [
       {
         duration: 60,

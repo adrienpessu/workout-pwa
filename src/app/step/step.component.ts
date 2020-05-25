@@ -93,7 +93,9 @@ export class StepComponent implements OnInit, OnDestroy {
     }, error => this.errorService.openSnackBar());
 
     this.next.pipe(
-      mergeMap(time => forkJoin([of(time), this.startingAudio.play(), interval(1000).pipe(take(3))]))
+      mergeMap(time => forkJoin(
+        [of(time), this.startingAudio.play(), interval(1000).pipe(take(3))]
+      ))
     ).subscribe(time => this.timer(<number> time[0]));
 
   }
