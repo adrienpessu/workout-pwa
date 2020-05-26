@@ -38,7 +38,7 @@
     <ng-container *ngIf="started && (currentStepIndex - 1) === numberOfSteps">
       <p>That all folks!</p>
     </ng-container>
-    <ng-container *ngIf="started && currentStepIndex <= numberOfSteps">
+    <ng-container *ngIf="started && currentStepIndex <= numberOfSteps && !hideCounter">
       <span> {{countDownStart}}</span>
       <p> {{ stepLabel }} </p>
     </ng-container>

@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -25,9 +26,8 @@ export class StepsService {
       }];
   }
 
-  getSteps() {
 
-
+  getDefaultsSteps() {
     return [
       {
         duration: 60,
@@ -87,5 +87,13 @@ export class StepsService {
         countdown: true
       }
     ];
+  }
+
+  getSteps() {
+    if (environment.production) {
+      return this.getDefaultsSteps();
+    } else {
+      return this.getStepsDev();
+    }
   }
 }

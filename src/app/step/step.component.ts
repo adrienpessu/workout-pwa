@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {filter, map, mergeMap, switchMap, take} from 'rxjs/operators';
+import {filter, map, switchMap, take} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
 import {StepsService} from '../shared/service/steps.service';
-import {forkJoin, from, interval, of, ReplaySubject, Subscription} from 'rxjs';
+import {from, interval, of, ReplaySubject, Subscription} from 'rxjs';
 import {ErrorService} from '../shared/service/error.service';
 import {StorageService} from '../shared/service/storage.service';
 import {PrefsInterface} from '../shared/interface/prefs.interface';
@@ -29,10 +29,9 @@ export class StepComponent implements OnInit, OnDestroy {
 
   prefs: PrefsInterface;
 
-  next = new ReplaySubject();
-
   public endingAudio: HTMLAudioElement = new Audio();
   public startingAudio: HTMLAudioElement = new Audio();
+  hideCounter: boolean = false;
 
   constructor(
     private errorService: ErrorService,
@@ -56,7 +55,7 @@ export class StepComponent implements OnInit, OnDestroy {
           return of(0);
         }
       })
-    ).subscribe((result: number) => {
+    ).subscribe(async (result: number) => {
       if (result === 0) {
         this.started = false;
       } else {
@@ -80,31 +79,32 @@ export class StepComponent implements OnInit, OnDestroy {
             this.nextStepLabel = '';
           }
 
-          if (currentStep.countdown && this.prefs.volumeOn) {
-            this.next.next(time);
-          } else {
-            this.timer(time);
-          }
+
+            this.timer(time, currentStep.countdown && this.prefs.volumeOn);
+
         } else {
           this.nextStepLabel = '';
         }
       }
 
     }, error => this.errorService.openSnackBar());
-
-    this.next.pipe(
-      mergeMap(time => forkJoin(
-        [of(time), this.startingAudio.play(), interval(1000).pipe(take(3))]
-      ))
-    ).subscribe(time => this.timer(<number> time[0]));
-
   }
 
-  private timer(time: number) {
+  private async timer(time: number, countDown = false) {
+    let realTimer = 0;
+    if (countDown) {
+      await this.startingAudio.play();
+      this.hideCounter = true;
+      time = time + 3;
+    }
     this.subscriptions.push(interval(1000)
       .pipe(filter(s => !this.paused), take(time),
         map((v) => (time - 1) - v))
       .subscribe((v) => {
+        realTimer++;
+        if (realTimer === 3) {
+          this.hideCounter = false;
+        }
         this.countDownStart = v;
         if (v === 0) {
           this.currentStepIndex++;
