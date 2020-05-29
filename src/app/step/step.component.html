@@ -42,6 +42,9 @@
       <span> {{countDownStart}}</span>
       <p> {{ stepLabel }} </p>
     </ng-container>
+    <ng-container *ngIf="hideCounter">
+      <p>3, 2, 1 Go!!!</p>
+    </ng-container>
     <ng-container *ngIf="!started">
       <p>Let's go</p>
       <p *ngIf="consecutiveDays > 0">{{consecutiveDays}}</p>

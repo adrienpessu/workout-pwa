@@ -31,7 +31,8 @@ export class StepsService {
     return [
       {
         duration: 60,
-        title: 'Planche'
+        title: 'Planche',
+        countdown: true
       },
       {
         duration: 20,

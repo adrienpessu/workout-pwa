@@ -24,7 +24,7 @@ export class StorageService {
   }
 
   getConsecutiveDays() {
-    const item = localStorage.getItem('consecutive-days');
+    const item = localStorage.getItem('each-practice');
     if (item && item.length > 0) {
       const consecutiveDays = JSON.parse(item);
       if (consecutiveDays.length > 0) {
