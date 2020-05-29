@@ -26,32 +26,34 @@ export class StorageService {
   getConsecutiveDays() {
     const item = localStorage.getItem('consecutive-days');
     if (item && item.length > 0) {
-      const consecutiveDays = JSON.parse(item);
-      if (consecutiveDays.length > 0) {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const last = new Date(consecutiveDays[length - 1]);
-        if (last.getDate() === yesterday.getDate() &&
-          last.getMonth() === yesterday.getMonth() &&
-          last.getFullYear() === yesterday.getFullYear()) {
-          return consecutiveDays.length;
-        }
-      }
+      return item.length;
+      // const consecutiveDays = JSON.parse(item);
+      // if (consecutiveDays.length > 0) {
+      //   const yesterday = new Date();
+      //   yesterday.setDate(yesterday.getDate() - 1);
+      //   const last = new Date(consecutiveDays[length - 1]);
+      //   if (last.getDate() === yesterday.getDate() &&
+      //     last.getMonth() === yesterday.getMonth() &&
+      //     last.getFullYear() === yesterday.getFullYear()) {
+      //     return consecutiveDays.length;
+      //   }
+      // }
     }
     return 0;
   }
 
   addConsecutiveDays() {
-    const item = localStorage.getItem('consecutive-days');
+    const item = localStorage.getItem('each-practice');
     let consecutiveDays = [];
     if (item && item.length > 0) {
       consecutiveDays = JSON.parse(item);
       if (!consecutiveDays) {
         consecutiveDays = [];
       }
-      consecutiveDays.push(new Date());
     }
-    localStorage.setItem('consecutive-days', JSON.stringify(consecutiveDays));
+    consecutiveDays.push(new Date());
+
+    localStorage.setItem('each-practice', JSON.stringify(consecutiveDays));
   }
 
 }
