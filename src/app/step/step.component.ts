@@ -133,9 +133,7 @@ export class StepComponent implements OnInit, OnDestroy {
 
   refresh() {
     this.hideRefresh = true;
-    if (this.updates.checkForUpdate()) {
-      window.location.reload();
-    }
+    this.updates.activateUpdate().then(() => document.location.reload());
     this.hideRefresh = false;
   }
 
