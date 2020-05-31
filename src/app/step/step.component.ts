@@ -2,9 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {filter, map, switchMap, take} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
 import {StepsService} from '../shared/service/steps.service';
-import {from, interval, of, ReplaySubject, Subscription} from 'rxjs';
+import {from, interval, of, Subscription} from 'rxjs';
 import {ErrorService} from '../shared/service/error.service';
 import {StorageService} from '../shared/service/storage.service';
+import {SwUpdate} from '@angular/service-worker';
 import {PrefsInterface} from '../shared/interface/prefs.interface';
 
 @Component({
@@ -23,9 +24,10 @@ export class StepComponent implements OnInit, OnDestroy {
   currentStepIndex: number;
   numberOfSteps: number;
   started = false;
+  hideRefresh = false;
 
   paused = false;
-  consecutiveDays = 0;
+  stats: any = {};
 
   prefs: PrefsInterface;
 
@@ -38,7 +40,8 @@ export class StepComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     public router: Router,
     private stepsService: StepsService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    public updates: SwUpdate
   ) {
     this.prefs = this.storageService.getPrefs();
     this.endingAudio.src = '../../../assets/sounds/mario.mp3';
@@ -46,7 +49,7 @@ export class StepComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.consecutiveDays = this.storageService.getConsecutiveDays();
+    this.stats = this.storageService.stats();
     this.route.paramMap.pipe(
       switchMap(params => {
         if (params.has('id')) {
@@ -80,7 +83,7 @@ export class StepComponent implements OnInit, OnDestroy {
           }
 
 
-            this.timer(time, currentStep.countdown && this.prefs.volumeOn);
+          this.timer(time, currentStep.countdown && this.prefs.volumeOn);
 
         } else {
           this.nextStepLabel = '';
@@ -128,7 +131,15 @@ export class StepComponent implements OnInit, OnDestroy {
   }
 
   refresh() {
-    window.location.reload();
+    this.hideRefresh = true;
+    if (this.updates.checkForUpdate()) {
+      window.location.reload();
+    }
+    this.hideRefresh = false;
+  }
+
+  clearStats() {
+    this.stats = this.storageService.clear();
   }
 
 }
