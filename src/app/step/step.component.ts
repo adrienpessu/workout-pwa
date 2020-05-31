@@ -96,6 +96,7 @@ export class StepComponent implements OnInit, OnDestroy {
   private async timer(time: number, countDown = false) {
     let realTimer = 0;
     if (countDown) {
+      this.startingAudio.load();
       await this.startingAudio.play();
       this.hideCounter = true;
       time = time + 3;
@@ -110,13 +111,13 @@ export class StepComponent implements OnInit, OnDestroy {
         }
         this.countDownStart = v;
         if (v === 0) {
-          this.currentStepIndex++;
           this.endingAudio.load();
-          if (this.prefs.volumeOn) {
+          if (!!this.prefs.volumeOn) {
             from(this.endingAudio.play()).subscribe(response => this.router.navigate(['/' + +this.currentStepIndex]));
           } else {
             this.router.navigate(['/' + +this.currentStepIndex]);
           }
+          this.currentStepIndex++;
         }
       }));
   }
