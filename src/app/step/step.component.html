@@ -49,7 +49,11 @@
     </ng-container>
     <ng-container *ngIf="!started">
       <p>Let's go</p>
-      <p *ngIf="stats.total > 0">Total : {{stats.total}}</p>
+      <ul>
+        <li *ngIf="stats.total > 0">Total : {{stats.total}}</li>
+        <li *ngIf="stats.total > 0">Last 30 : {{stats.last30}}</li>
+        <li *ngIf="stats.total > 0">Consecutive : {{stats.consecutive}}</li>
+      </ul>
     </ng-container>
     <ng-container *ngIf="nextStepLabel">
       <p class="small"><u>Prochaine étape</u> : {{ nextStepLabel }}</p>

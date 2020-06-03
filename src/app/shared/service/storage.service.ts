@@ -28,20 +28,41 @@ export class StorageService {
   stats(): { total: number, last30: number, consecutive: number } {
     const item = localStorage.getItem(this._key);
     if (item && item.length > 0) {
-      const consecutiveDays = JSON.parse(item);
-      if (consecutiveDays.length > 0) {
-        return { total: consecutiveDays.length, last30: 0, consecutive: 0 };
-        //   const yesterday = new Date();
-        //   yesterday.setDate(yesterday.getDate() - 1);
-        //   const last = new Date(consecutiveDays[length - 1]);
-        //   if (last.getDate() === yesterday.getDate() &&
-        //     last.getMonth() === yesterday.getMonth() &&
-        //     last.getFullYear() === yesterday.getFullYear()) {
-        //     return consecutiveDays.length;
-        //   }
+      const days = JSON.parse(item);
+      if (days.length > 0) {
+        const daysDate = days.map(d => new Date(d));
+        const date30jours = new Date();
+        date30jours.setDate(date30jours.getDate() - 30);
+
+        const last30Days = daysDate.filter(currentDate => currentDate.getTime() >= date30jours.getTime());
+        const consecutive = daysDate.sort((a, b) => b - a);
+        console.log(consecutive);
+        let consecutiveDays = 0;
+        if (consecutive.length > 0) {
+          consecutiveDays++;
+          let last = consecutive[0];
+          last.setHours(0, 0, 0, 0);
+          let index = 1;
+          let stillConsecutive = true;
+          while (index < consecutive.length && stillConsecutive) {
+            const currentDate = consecutive[index];
+            currentDate.setHours(0, 0, 0, 0);
+
+            if ((last.getTime() - currentDate.getTime()) === (1000 * 60 * 60 * 24)
+              || (last.getTime() - currentDate.getTime()) === 0) {
+              consecutiveDays++;
+            } else {
+              stillConsecutive = false;
+            }
+            index++;
+            last = currentDate;
+          }
+        }
+
+        return {total: days.length, last30: last30Days.length, consecutive: consecutiveDays};
       }
     }
-    return { total: 0, last30: 0, consecutive: 0 };
+    return {total: 0, last30: 0, consecutive: 0};
   }
 
   addConsecutiveDays() {
@@ -60,7 +81,7 @@ export class StorageService {
 
   clear() {
     localStorage.removeItem(this._key);
-    return { total: 0, last30: 0, consecutive: 0 };
+    return {total: 0, last30: 0, consecutive: 0};
   }
 
 }
