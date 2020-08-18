@@ -26,7 +26,6 @@ export class AudioService {
   }
 
   async playStarting() {
-    debugger;
     if (this.prefs.volumeOn) {
       this.startingAudio.load();
       await this.startingAudio.play();

@@ -7,13 +7,15 @@ import { environment } from '../environments/environment';
 import { StatsComponent } from './stats/stats.component';
 import { CtrlComponent } from './ctrl/ctrl.component';
 import { PrefsComponent } from './prefs/prefs.component';
+import { StepsComponent } from './steps/steps.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CtrlComponent,
     PrefsComponent,
-    StatsComponent
+    StatsComponent,
+    StepsComponent
   ],
   imports: [
     BrowserModule,

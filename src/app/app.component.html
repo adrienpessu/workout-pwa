@@ -15,7 +15,8 @@
     <div class=" banner second">
       <div class="left">
         <app-ctrl [currentStepIndex]="currentStepIndex" [paused]="paused" [started]="started"
-                  (triggerPause)="onPaused($event)" (triggerNext)="onNext($event)" (triggerReset)="onReset()" (triggerStart)="onStart($event)">
+                  (triggerPause)="onPaused($event)" (triggerNext)="onNext($event)" (triggerReset)="onReset()"
+                  (triggerStart)="onStart($event)">
         </app-ctrl>
       </div>
       <div class="right">
@@ -25,23 +26,14 @@
   </div>
 
   <div class="content" role="main">
-    <ng-container *ngIf="started && (currentStepIndex - 1) === numberOfSteps">
-      <p>That all folks!</p>
-    </ng-container>
-    <ng-container *ngIf="started && currentStepIndex <= numberOfSteps && !hideCounter">
-      <span> {{currentCount}}</span>
-      <p> {{ stepLabel }} </p>
-    </ng-container>
-    <ng-container *ngIf="hideCounter">
-      <h1>3, 2, 1 Go!!!</h1>
-      <p> {{ stepLabel }} </p>
-    </ng-container>
-    <ng-container *ngIf="!started">
-      <p>Let's go</p>
-      <app-stats></app-stats>
-    </ng-container>
-    <ng-container *ngIf="nextStepLabel && started">
-      <p class="small"><u>Prochaine étape</u> : {{ nextStepLabel }}</p>
-    </ng-container>
+    <app-steps
+      [currentCount]="currentCount"
+      [currentStepIndex]="currentStepIndex"
+      [hideCounter]="hideCounter"
+      [nextStepLabel]="nextStepLabel"
+      [numberOfSteps]="numberOfSteps"
+      [started]="started"
+      [stepLabel]="stepLabel"
+    ></app-steps>
   </div>
 </div>

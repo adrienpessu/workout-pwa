@@ -55,27 +55,6 @@ div.content {
   align-items: center;
   justify-content: center;
   height: 100%;
-
-  h1 {
-    color: $main-color;
-    text-align: center;
-  }
-
-  p {
-    color: $main-color;
-    font-size: 4rem;
-    text-align: center;
-  }
-  p.small {
-    color: $main-color;
-    font-size: 2rem;
-    text-align: center;
-  }
-  span {
-    color: $main-color;
-    font-size: 5rem;
-    text-align: center;
-  }
 }
 
 div.footer {
