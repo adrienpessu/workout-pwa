@@ -90,12 +90,17 @@ div.content {
     text-align: center;
   }
 
-  span {
-    color: $main-color;
-    font-size: 5rem;
-    text-align: center;
+  img.stats {
+    cursor: pointer;
+    height: 4rem;
+    margin: 2rem;
   }
 
+  ul,li {
+    color: $main-color;
+    font-size: 1.5rem;
+    text-align: left;
+  }
   p {
     color: $main-color;
     font-size: 4rem;
@@ -106,10 +111,10 @@ div.content {
     font-size: 2rem;
     text-align: center;
   }
-  ul,li {
+  span {
     color: $main-color;
-    font-size: 1.5rem;
-    text-align: left;
+    font-size: 5rem;
+    text-align: center;
   }
 }
 

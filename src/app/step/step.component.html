@@ -26,8 +26,6 @@
       <div class="right">
         <img src="../../assets/svg/volume_down.svg" (click)="triggerVolume()" *ngIf="prefs.volumeOn">
         <img src="../../assets/svg/volume_off.svg" (click)="triggerVolume()" *ngIf="!prefs.volumeOn">
-        <img src="../../assets/svg/clear.svg" *ngIf="!started" (click)="clearStats()">
-        <img src="../../assets/svg/update.svg" *ngIf="!started && !hideRefresh" (click)="refresh()">
       </div>
     </div>
   </div>
@@ -51,6 +49,7 @@
         <li *ngIf="stats.total > 0">Last 30 : {{stats.last30}}</li>
         <li *ngIf="stats.total > 0">Consecutive : {{stats.consecutive}}</li>
       </ul>
+      <img class="stats" src="../../assets/svg/clear.svg" (click)="clearStats()">
     </ng-container>
     <ng-container *ngIf="nextStepLabel && started">
       <p class="small"><u>Prochaine étape</u> : {{ nextStepLabel }}</p>
