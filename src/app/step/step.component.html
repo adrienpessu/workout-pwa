@@ -3,28 +3,25 @@
   <div class="header main" role="banner">
     <div class="banner">
       <div>
-        <img routerLink="/"
+        <img (click)="reload()"
              width="40"
              alt=" Logo"
              src="assets/icons/sports-24px.svg"
         />
-        <h1 routerLink="/">Workout</h1>
+        <h1 (click)="reload()">Workout</h1>
       </div>
-      <p *ngIf="numberOfSteps && currentStepIndex <= numberOfSteps">{{ currentStepIndex }} / {{ numberOfSteps }}</p>
+      <p *ngIf="started">{{ (currentStepIndex + 1) }} / {{ numberOfSteps }}</p>
     </div>
-    <div class="banner second">
+    <div class=" banner second">
       <div class="left">
         <img src="../../assets/svg/replay.svg" aria-label="Next" *ngIf="started && currentStepIndex <= numberOfSteps "
-             [routerLink]="'/'">
-        <img src="../../assets/svg/play.svg" (click)="ngOnDestroy()" aria-label="Start"
-             *ngIf="!started || (currentStepIndex - 1) === numberOfSteps " routerLink="/1">
+             (click)="reset.next()">
+        <img src="../../assets/svg/play.svg" (click)="start.next(false)" aria-label="Start"
+             *ngIf="!started || (currentStepIndex - 1) === numberOfSteps ">
         <img src="../../assets/svg/skip_next.svg" aria-label="Start"
-             *ngIf="started && currentStepIndex <= numberOfSteps " (click)="ngOnDestroy()"
-             [routerLink]="'/' + (currentStepIndex+1)">
-        <img src="../../assets/svg/pause.svg" aria-label="Start"
-             *ngIf="started && !paused" (click)="paused = !paused">
-        <img src="../../assets/svg/play.svg" aria-label="Start"
-             *ngIf="started && paused" (click)="paused = !paused">
+             *ngIf="started && currentStepIndex <= numberOfSteps " (click)="next.next(currentStepIndex + 1)">
+        <img src="../../assets/svg/pause.svg" *ngIf="started && !paused" aria-label="Start" (click)="paused = !paused">
+        <img src="../../assets/svg/play.svg" *ngIf="started && paused" aria-label="Start" (click)="paused = !paused">
       </div>
       <div class="right">
         <img src="../../assets/svg/volume_down.svg" (click)="triggerVolume()" *ngIf="prefs.volumeOn">
@@ -40,7 +37,7 @@
       <p>That all folks!</p>
     </ng-container>
     <ng-container *ngIf="started && currentStepIndex <= numberOfSteps && !hideCounter">
-      <span> {{countDownStart}}</span>
+      <span> {{currentCount}}</span>
       <p> {{ stepLabel }} </p>
     </ng-container>
     <ng-container *ngIf="hideCounter">
@@ -55,7 +52,7 @@
         <li *ngIf="stats.total > 0">Consecutive : {{stats.consecutive}}</li>
       </ul>
     </ng-container>
-    <ng-container *ngIf="nextStepLabel">
+    <ng-container *ngIf="nextStepLabel && started">
       <p class="small"><u>Prochaine étape</u> : {{ nextStepLabel }}</p>
     </ng-container>
   </div>

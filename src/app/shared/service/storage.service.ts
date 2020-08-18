@@ -36,7 +36,7 @@ export class StorageService {
 
         const last30Days = daysDate.filter(currentDate => currentDate.getTime() >= date30jours.getTime());
         const consecutive = daysDate.sort((a, b) => b - a);
-        console.log(consecutive);
+        // console.log(consecutive);
         let consecutiveDays = 0;
         if (consecutive.length > 0) {
           consecutiveDays++;

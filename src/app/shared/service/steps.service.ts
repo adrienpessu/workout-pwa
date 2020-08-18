@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
+import {StepInterface} from '../interface/step.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -9,15 +10,17 @@ export class StepsService {
   constructor() {
   }
 
-  getStepsDev() {
-    return [{
-      duration: 3,
-      title: 'Planche',
-      countdown: true
-    },
+  private getStepsDev(): StepInterface[] {
+    return [
       {
         duration: 3,
-        title: 'Planche 2'
+        title: 'Planche',
+        countdown: true
+      },
+      {
+        duration: 3,
+        title: 'Planche 2',
+        rest: 4
       },
       {
         duration: 3,
@@ -32,51 +35,33 @@ export class StepsService {
       {
         duration: 60,
         title: 'Planche',
-        countdown: true
-      },
-      {
-        duration: 20,
-        title: 'Repos'
+        countdown: true,
+        rest: 20
       },
       {
         duration: 30,
-        title: 'Planche côté gauche'
-      },
-      {
-        duration: 20,
-        title: 'Repos'
+        title: 'Planche côté gauche',
+        rest: 20
       },
       {
         duration: 30,
-        title: 'Planche côté droit'
-      },
-      {
-        duration: 20,
-        title: 'Repos'
+        title: 'Planche côté droit',
+        rest: 20
       },
       {
         duration: 50,
-        title: 'Planche bras tendus'
-      },
-      {
-        duration: 20,
-        title: 'Repos'
+        title: 'Planche bras tendus',
+        rest: 20
       },
       {
         duration: 30,
-        title: 'Planche bras tendus côté gauche'
-      },
-      {
-        duration: 20,
-        title: 'Repos'
+        title: 'Planche bras tendus côté gauche',
+        rest: 20
       },
       {
         duration: 30,
-        title: 'Planche bras tendu côté droit'
-      },
-      {
-        duration: 20,
-        title: 'Repos'
+        title: 'Planche bras tendu côté droit',
+        rest: 20
       },
       {
         duration: 50,

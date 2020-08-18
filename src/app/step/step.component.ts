@@ -1,12 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {filter, map, switchMap, take} from 'rxjs/operators';
-import {ActivatedRoute, Router} from '@angular/router';
+import {delay, map, repeatWhen, take, takeUntil} from 'rxjs/operators';
+import {ActivatedRoute} from '@angular/router';
 import {StepsService} from '../shared/service/steps.service';
-import {from, interval, of, Subscription} from 'rxjs';
+import {interval, Subject, Subscription} from 'rxjs';
 import {ErrorService} from '../shared/service/error.service';
 import {StorageService} from '../shared/service/storage.service';
 import {SwUpdate} from '@angular/service-worker';
 import {PrefsInterface} from '../shared/interface/prefs.interface';
+import {StepInterface} from '../shared/interface/step.interface';
+import {AudioService} from '../shared/service/audio.service';
 
 @Component({
   selector: 'app-step',
@@ -15,115 +17,152 @@ import {PrefsInterface} from '../shared/interface/prefs.interface';
 })
 export class StepComponent implements OnInit, OnDestroy {
 
-  subscriptions: Subscription[] = [];
+  readonly stop = new Subject<boolean>();
+  readonly start = new Subject<boolean>();
+  readonly reset = new Subject<boolean>();
+  readonly next = new Subject<number>();
 
-  stepLabel: string;
-  nextStepLabel: string;
-  countDownStart: number;
-
-  currentStepIndex: number;
-  numberOfSteps: number;
-  started = false;
-  hideRefresh = false;
-
-  paused = false;
-  stats: any = {};
-
-  prefs: PrefsInterface;
-
-  public endingAudio: HTMLAudioElement = new Audio();
-  public startingAudio: HTMLAudioElement = new Audio();
+  currentCount: number;
+  currentStepIndex: number = 0;
   hideCounter: boolean = false;
+  hideRefresh = false;
+  lastCount: number = 0;
+  nextStepLabel: string;
+  numberOfSteps: number = 1;
+  prefs: PrefsInterface;
+  subscription: Subscription;
+  started = false;
+  stats: any = {};
+  steps: StepInterface[] = [];
+  stepLabel: string;
+
+  private _paused = false;
 
   constructor(
+    private audioService: AudioService,
     private errorService: ErrorService,
     private route: ActivatedRoute,
-    public router: Router,
     private stepsService: StepsService,
     private storageService: StorageService,
     public updates: SwUpdate
   ) {
     this.prefs = this.storageService.getPrefs();
-    this.endingAudio.src = '../../../assets/sounds/mario.mp3';
-    this.startingAudio.src = '../../../assets/sounds/countdown.mp3';
   }
 
   ngOnInit(): void {
     this.stats = this.storageService.stats();
-    this.route.paramMap.pipe(
-      switchMap(params => {
-        if (params.has('id')) {
-          return of(+params.get('id'));
-        } else {
-          return of(0);
-        }
-      })
-    ).subscribe(async (result: number) => {
-      if (result === 0) {
-        this.started = false;
+    this.steps = this.stepsService.getSteps();
+    const steps = this.stepsService.getSteps();
+    this.numberOfSteps = steps.length;
+
+    this.start.subscribe(async (resume: boolean = false) => {
+      if (resume) {
+        await this.newTimer(this.lastCount, false, this.steps[this.currentStepIndex].rest);
       } else {
-        this.started = true;
-        const steps = this.stepsService.getSteps();
-        this.numberOfSteps = steps.length;
-        this.currentStepIndex = result;
-
-        if (this.started && (this.currentStepIndex - 1) === this.numberOfSteps) {
-          this.storageService.addConsecutiveDays();
-        }
-
-        if (this.currentStepIndex <= this.numberOfSteps) {
-          const currentStep = steps[result - 1];
-          const time = currentStep.duration;
-          this.countDownStart = time;
-          this.stepLabel = currentStep.title;
-          if (steps[result] && steps[result].title) {
-            this.nextStepLabel = steps[result].title;
-          } else {
-            this.nextStepLabel = '';
-          }
-
-
-          this.timer(time, currentStep.countdown && this.prefs.volumeOn);
-
+        this.currentStepIndex = 0;
+        this.stepLabel = this.steps[0].title;
+        if (this.steps[1] && this.steps[1].title) {
+          this.nextStepLabel = this.steps[1].title;
         } else {
           this.nextStepLabel = '';
         }
-      }
 
-    }, error => this.errorService.openSnackBar());
+        await this.newTimer(this.steps[0].duration, this.steps[0].countdown, this.steps[0].rest);
+      }
+      this.started = true;
+    });
+
+    this.next.subscribe(async (index: number) => {
+      await this.audioService.playEnding();
+      this.currentStepIndex = index;
+      if (index === this.steps.length) {
+        this.started = false;
+        return;
+      }
+      if (this.steps[index]) {
+        this.stepLabel = this.steps[index].title;
+        if (this.steps[index + 1] && this.steps[index + 1].title) {
+          this.nextStepLabel = this.steps[index + 1].title;
+        } else {
+          this.nextStepLabel = '';
+        }
+        await this.newTimer(this.steps[index].duration, this.steps[index].countdown, this.steps[index].rest);
+      }
+    });
+
+    this.reset.subscribe(() => {
+      this.ngOnDestroy();
+      this.started = false;
+    });
   }
 
-  private async timer(time: number, countDown = false) {
-    let realTimer = 0;
-    if (countDown) {
-      this.startingAudio.load();
-      await this.startingAudio.play();
-      this.hideCounter = true;
-      time = time + 3;
+  get paused(): boolean {
+    return this._paused;
+  }
+
+  set paused(value: boolean) {
+    if (value) {
+      this.stop.next();
+      this.lastCount = this.currentCount;
+    } else {
+      this.start.next(true);
     }
-    this.subscriptions.push(interval(1000)
-      .pipe(filter(s => !this.paused), take(time),
-        map((v) => (time - 1) - v))
-      .subscribe((v) => {
-        realTimer++;
-        if (realTimer === 3) {
-          this.hideCounter = false;
+    this._paused = value;
+  }
+
+  private async newTimer(time: number, countDown?: boolean, rest: number = 0) {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+    this.currentCount = time;
+
+    const totalTime = time + rest;
+
+    let delayCount = 0;
+    if (countDown) {
+      delayCount = 3000;
+      this.hideCounter = true;
+      await this.audioService.playStarting();
+    }
+
+    let breakSound = false;
+
+    this.subscription = interval(1000) // 1 second
+      .pipe(
+        take(totalTime), // number of time
+        repeatWhen(() => this.start), // to manage restart when paused
+        takeUntil(this.stop), // to stop when paused
+        delay(delayCount),
+        map(value => totalTime - value - 1) // to invert the count to have a countdown
+      )
+      .subscribe(async value => {
+        this.hideCounter = false;
+        const restPoint = value - rest < 0;
+        if (!restPoint) {
+          this.currentCount = value - rest;
+        } else {
+          this.stepLabel = 'Break';
+          this.currentCount = value;
         }
-        this.countDownStart = v;
-        if (v === 0) {
-          this.endingAudio.load();
-          if (!!this.prefs.volumeOn) {
-            from(this.endingAudio.play()).subscribe(response => this.router.navigate(['/' + +this.currentStepIndex]));
-          } else {
-            this.router.navigate(['/' + +this.currentStepIndex]);
-          }
-          this.currentStepIndex++;
+
+        if (rest > 0 && restPoint && !breakSound) {
+          await this.audioService.playEnding();
+          breakSound = true;
         }
-      }));
+
+        if (value === 0) {
+          this.next.next(this.currentStepIndex + 1);
+        }
+      }, (err) => {
+        console.error(err);
+      });
+    return this.subscription;
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   triggerVolume() {
@@ -141,4 +180,7 @@ export class StepComponent implements OnInit, OnDestroy {
     this.stats = this.storageService.clear();
   }
 
+  reload() {
+    window.location.reload();
+  }
 }
