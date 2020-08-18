@@ -6,6 +6,7 @@ import {ErrorService} from './shared/service/error.service';
 import {SwUpdate} from '@angular/service-worker';
 import {StepsService} from './shared/service/steps.service';
 import {delay, map, repeatWhen, take, takeUntil} from 'rxjs/operators';
+import {StorageService} from './shared/service/storage.service';
 
 @Component({
   selector: 'app-root',
@@ -38,7 +39,8 @@ export class AppComponent implements OnInit {
     private audioService: AudioService,
     private errorService: ErrorService,
     public updates: SwUpdate,
-    private stepsService: StepsService
+    private stepsService: StepsService,
+    private storage: StorageService
   ) {
   }
 
@@ -75,6 +77,7 @@ export class AppComponent implements OnInit {
       this.currentStepIndex = index;
       if (index === this.steps.length) {
         this.started = false;
+        this.storage.addConsecutiveDays();
         return;
       }
       if (this.steps[index]) {
