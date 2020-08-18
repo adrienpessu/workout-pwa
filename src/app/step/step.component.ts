@@ -4,9 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {StepsService} from '../shared/service/steps.service';
 import {interval, Subject, Subscription} from 'rxjs';
 import {ErrorService} from '../shared/service/error.service';
-import {StorageService} from '../shared/service/storage.service';
 import {SwUpdate} from '@angular/service-worker';
-import {PrefsInterface} from '../shared/interface/prefs.interface';
 import {StepInterface} from '../shared/interface/step.interface';
 import {AudioService} from '../shared/service/audio.service';
 
@@ -29,28 +27,29 @@ export class StepComponent implements OnInit, OnDestroy {
   lastCount: number = 0;
   nextStepLabel: string;
   numberOfSteps: number = 1;
-  prefs: PrefsInterface;
+  paused = false;
   subscription: Subscription;
   started = false;
-  stats: any = {};
   steps: StepInterface[] = [];
   stepLabel: string;
 
-  private _paused = false;
 
   constructor(
     private audioService: AudioService,
     private errorService: ErrorService,
+    public updates: SwUpdate,
     private route: ActivatedRoute,
-    private stepsService: StepsService,
-    private storageService: StorageService,
-    public updates: SwUpdate
+    private stepsService: StepsService
   ) {
-    this.prefs = this.storageService.getPrefs();
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   ngOnInit(): void {
-    this.stats = this.storageService.stats();
     this.steps = this.stepsService.getSteps();
     const steps = this.stepsService.getSteps();
     this.numberOfSteps = steps.length;
@@ -96,18 +95,33 @@ export class StepComponent implements OnInit, OnDestroy {
     });
   }
 
-  get paused(): boolean {
-    return this._paused;
+  onNext(value: number) {
+    this.next.next(value);
   }
 
-  set paused(value: boolean) {
+  onPaused(value: boolean) {
+    this.paused = value;
     if (value) {
       this.stop.next();
       this.lastCount = this.currentCount;
     } else {
       this.start.next(true);
     }
-    this._paused = value;
+  }
+
+  onReset() {
+    this.reset.next();
+  }
+
+  onStart(value: boolean) {
+    this.start.next(value);
+  }
+
+  reload() {
+    this.hideRefresh = true;
+    this.updates.activateUpdate().then(() => document.location.reload());
+    this.hideRefresh = false;
+    window.location.reload();
   }
 
   private async newTimer(time: number, countDown?: boolean, rest: number = 0) {
@@ -157,30 +171,5 @@ export class StepComponent implements OnInit, OnDestroy {
         console.error(err);
       });
     return this.subscription;
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
-
-  triggerVolume() {
-    this.prefs.volumeOn = !this.prefs.volumeOn;
-    this.storageService.setPrefs(this.prefs);
-  }
-
-  refresh() {
-    this.hideRefresh = true;
-    this.updates.activateUpdate().then(() => document.location.reload());
-    this.hideRefresh = false;
-  }
-
-  clearStats() {
-    this.stats = this.storageService.clear();
-  }
-
-  reload() {
-    window.location.reload();
   }
 }

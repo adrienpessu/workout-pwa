@@ -1,0 +1,6 @@
+<ul>
+  <li *ngIf="stats.total > 0">Total : {{stats.total}}</li>
+  <li *ngIf="stats.total > 0">Last 30 : {{stats.last30}}</li>
+  <li *ngIf="stats.total > 0">Consecutive : {{stats.consecutive}}</li>
+</ul>
+<img class="stats" src="../../assets/svg/clear.svg" (click)="clearStats()">

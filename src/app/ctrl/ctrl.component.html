@@ -1,0 +1,6 @@
+<img src="../../assets/svg/replay.svg" *ngIf="started" aria-label="Next" (click)="triggerReset.emit()">
+<img src="../../assets/svg/play.svg" *ngIf="!started" aria-label="Start" (click)="triggerStart.next(false)">
+<img src="../../assets/svg/skip_next.svg" *ngIf="started" aria-label="Next"
+     (click)="triggerNext.next(currentStepIndex + 1)">
+<img src="../../assets/svg/pause.svg" *ngIf="started && !paused" aria-label="Start" (click)="triggerPause.emit(true)">
+<img src="../../assets/svg/play.svg" *ngIf="started && paused" aria-label="Start" (click)="triggerPause.emit(false)">

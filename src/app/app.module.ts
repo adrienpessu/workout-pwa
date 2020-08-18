@@ -6,11 +6,17 @@ import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { StepComponent } from './step/step.component';
+import { StatsComponent } from './stats/stats.component';
+import { CtrlComponent } from './ctrl/ctrl.component';
+import { PrefsComponent } from './prefs/prefs.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    StepComponent
+    StepComponent,
+    StatsComponent,
+    CtrlComponent,
+    PrefsComponent
   ],
   imports: [
     BrowserModule,

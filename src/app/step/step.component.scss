@@ -1,18 +1,4 @@
-@font-face {
-  font-family: 'Baloo2';
-  src: url('../../assets/fonts/Baloo2-Regular.woff2') format('woff2'),
-  url('../../assets/fonts/Baloo2-Regular.woff') format('woff');
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-$main-color: #1976d2;
-$primary_font: 'Baloo2';
-
-* {
-  font-family: $primary_font;
-}
+@import "../../common";
 
 div.app-container {
   display: flex;
@@ -45,21 +31,6 @@ div.app-container {
   &.second {
     background-color: white;
     color: $main-color;
-
-    div.left {
-      img {
-        margin-right: 1rem;
-      }
-    }
-    div.right {
-      img {
-        margin-left: 1rem;
-      }
-    }
-    img {
-      cursor: pointer;
-      height: 3rem;
-    }
   }
 
   div {
@@ -90,17 +61,6 @@ div.content {
     text-align: center;
   }
 
-  img.stats {
-    cursor: pointer;
-    height: 4rem;
-    margin: 2rem;
-  }
-
-  ul,li {
-    color: $main-color;
-    font-size: 1.5rem;
-    text-align: left;
-  }
   p {
     color: $main-color;
     font-size: 4rem;

@@ -1,0 +1,15 @@
+@font-face {
+  font-family: 'Baloo2';
+  src: url('../../assets/fonts/Baloo2-Regular.woff2') format('woff2'),
+  url('../../assets/fonts/Baloo2-Regular.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+$main-color: #1976d2;
+$primary_font: 'Baloo2';
+
+* {
+  font-family: $primary_font;
+}
