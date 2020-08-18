@@ -1,6 +1,6 @@
-<ul>
+<ul (dblclick)="displayClear = true" >
   <li>Total : {{stats.total}}</li>
   <li>Last 30 : {{stats.last30}}</li>
   <li>Consecutive : {{stats.consecutive}}</li>
 </ul>
-<img class="stats" src="../../assets/svg/clear.svg" (click)="clearStats()">
+<img *ngIf="displayClear" class="stats" src="../../assets/svg/clear.svg" (click)="clearStats()">

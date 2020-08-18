@@ -9,6 +9,7 @@ import {StorageService} from '../shared/service/storage.service';
 export class StatsComponent implements OnInit {
 
   stats: any = {};
+  displayClear: boolean = false;
 
   constructor(private storageService: StorageService) {}
 
