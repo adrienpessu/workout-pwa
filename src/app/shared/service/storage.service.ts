@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {PrefsInterface} from '../interface/prefs.interface';
+import {StatsInterface} from '../interface/stats';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class StorageService {
     localStorage.setItem('prefs', JSON.stringify(prefs));
   }
 
-  stats(): { total: number, last30: number, consecutive: number } {
+  stats(): StatsInterface {
     const item = localStorage.getItem(this._key);
     if (item && item.length > 0) {
       const days = JSON.parse(item);
@@ -36,7 +37,6 @@ export class StorageService {
 
         const last30Days = daysDate.filter(currentDate => currentDate.getTime() >= date30jours.getTime());
         const consecutive = daysDate.sort((a, b) => b - a);
-        // console.log(consecutive);
         let consecutiveDays = 0;
         if (consecutive.length > 0) {
           consecutiveDays++;
@@ -79,7 +79,7 @@ export class StorageService {
     localStorage.setItem(this._key, JSON.stringify(consecutiveDays));
   }
 
-  clear() {
+  clear(): StatsInterface {
     localStorage.removeItem(this._key);
     return {total: 0, last30: 0, consecutive: 0};
   }
