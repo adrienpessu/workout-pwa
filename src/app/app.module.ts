@@ -1,11 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { StepComponent } from './step/step.component';
 import { StatsComponent } from './stats/stats.component';
 import { CtrlComponent } from './ctrl/ctrl.component';
 import { PrefsComponent } from './prefs/prefs.component';
@@ -13,14 +11,12 @@ import { PrefsComponent } from './prefs/prefs.component';
 @NgModule({
   declarations: [
     AppComponent,
-    StepComponent,
-    StatsComponent,
     CtrlComponent,
-    PrefsComponent
+    PrefsComponent,
+    StatsComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [],
