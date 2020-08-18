@@ -1,5 +1,9 @@
 @import "../common";
 
+app-steps {
+  height: 100%;
+}
+
 div.app-container {
   display: flex;
   flex-direction: column;
@@ -46,15 +50,6 @@ div.app-container {
   p {
     margin-right: 1rem;
   }
-}
-
-div.content {
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
 }
 
 div.footer {

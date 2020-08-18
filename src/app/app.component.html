@@ -24,16 +24,14 @@
       </div>
     </div>
   </div>
+  <app-steps
+    [currentCount]="currentCount"
+    [currentStepIndex]="currentStepIndex"
+    [hideCounter]="hideCounter"
+    [nextStepLabel]="nextStepLabel"
+    [numberOfSteps]="numberOfSteps"
+    [started]="started"
+    [stepLabel]="stepLabel"
+  ></app-steps>
 
-  <div class="content" role="main">
-    <app-steps
-      [currentCount]="currentCount"
-      [currentStepIndex]="currentStepIndex"
-      [hideCounter]="hideCounter"
-      [nextStepLabel]="nextStepLabel"
-      [numberOfSteps]="numberOfSteps"
-      [started]="started"
-      [stepLabel]="stepLabel"
-    ></app-steps>
-  </div>
 </div>
