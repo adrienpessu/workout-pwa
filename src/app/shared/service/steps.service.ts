@@ -13,17 +13,18 @@ export class StepsService {
   private getStepsDev(): StepInterface[] {
     return [
       {
-        duration: 3,
+        duration: 5,
         title: 'Planche',
         countdown: true
       },
       {
-        duration: 3,
+        duration: 5,
         title: 'Planche 2',
+        countdown: true,
         rest: 4
       },
       {
-        duration: 3,
+        duration: 5,
         title: 'étirement',
         countdown: true
       }];
