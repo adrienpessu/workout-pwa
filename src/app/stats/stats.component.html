@@ -1,6 +1,6 @@
 <ul (dblclick)="displayClear = true" >
   <li>Total : {{stats.total}}</li>
-  <li>Last 30 : {{stats.last30}}</li>
+  <li>Last 30 : {{stats.last30}} / {{ stats.outOf }}</li>
   <li>Consecutive : {{stats.consecutive}}</li>
 </ul>
 <img *ngIf="displayClear" class="stats" alt="erase stats" aria-label="erase stats" src="../../assets/svg/clear.svg" (click)="clearStats()">

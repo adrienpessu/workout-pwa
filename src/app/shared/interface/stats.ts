@@ -1,5 +1,6 @@
 export interface StatsInterface {
-  total: number;
-  last30: number;
   consecutive: number;
+  last30: number;
+  outOf: number;
+  total: number;
 }

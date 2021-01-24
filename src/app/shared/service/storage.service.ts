@@ -59,10 +59,16 @@ export class StorageService {
           }
         }
 
-        return {total: days.length, last30: last30Days.length, consecutive: consecutiveDays};
+        const earliest = last30Days.reduce((pre, cur) => {
+          return Date.parse(pre) > Date.parse(cur) ? cur : pre;
+        });
+
+        const outOf = (new Date().getTime() - new Date(earliest).getTime()) / (1000 * 3600 * 24);
+
+        return {total: days.length, last30: last30Days.length, consecutive: consecutiveDays, outOf: Math.round(outOf)};
       }
     }
-    return {total: 0, last30: 0, consecutive: 0};
+    return {total: 0, last30: 0, consecutive: 0, outOf: 0};
   }
 
   addConsecutiveDays() {
@@ -81,7 +87,7 @@ export class StorageService {
 
   clear(): StatsInterface {
     localStorage.removeItem(this._key);
-    return {total: 0, last30: 0, consecutive: 0};
+    return {total: 0, last30: 0, consecutive: 0, outOf: 0};
   }
 
 }
