@@ -161,6 +161,10 @@ export class AppComponent implements OnInit {
           this.currentCount = value;
         }
 
+        if (this.currentCount === 3) {
+          await this.audioService.playStarting();
+        }
+
         if (rest > 0 && restPoint && !breakSound) {
           await this.audioService.playEnding();
           breakSound = true;
