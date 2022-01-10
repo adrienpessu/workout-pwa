@@ -1,0 +1,14 @@
+<div class="main-container">
+
+  <span>{{ today }}</span>
+  <div class="box-inline">
+    <div class="box-container" (click)="plus(10)"><span>+10</span></div>
+    <div class="box-container" (click)="plus(20)"><span>+20</span></div>
+    <div class="box-container" (click)="plus(30)"><span>+30</span></div>
+    <div class="box-container" (click)="plus(40)"><span>+40</span></div>
+  </div>
+  <div>
+    {{ completedDays }} / 100 days
+  </div>
+
+</div>

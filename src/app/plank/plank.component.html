@@ -1,0 +1,32 @@
+<div class="app-container">
+  <!-- Toolbar -->
+  <div class="header main" role="banner">
+    <div class="banner">
+      <div>
+        <h1 (click)="reload()">Plank</h1>
+      </div>
+      <p *ngIf="started">{{ (currentStepIndex + 1) }} / {{ numberOfSteps }}</p>
+    </div>
+    <div class=" banner second">
+      <div class="left">
+        <app-ctrl [currentStepIndex]="currentStepIndex" [paused]="paused" [started]="started"
+                  (triggerPause)="onPaused($event)" (triggerNext)="onNext($event)" (triggerReset)="onReset()"
+                  (triggerStart)="onStart($event)">
+        </app-ctrl>
+      </div>
+      <div class="right">
+        <app-prefs></app-prefs>
+      </div>
+    </div>
+    <div class="container">
+      <app-steps
+        [currentCount]="currentCount"
+        [currentStepIndex]="currentStepIndex"
+        [hideCounter]="hideCounter"
+        [nextStepLabel]="nextStepLabel"
+        [numberOfSteps]="numberOfSteps"
+        [started]="started"
+        [stepLabel]="stepLabel"
+      ></app-steps>
+    </div>
+  </div>

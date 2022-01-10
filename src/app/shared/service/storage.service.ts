@@ -8,6 +8,7 @@ import {StatsInterface} from '../interface/stats';
 export class StorageService {
 
   private readonly _key = 'each-practice';
+  private readonly _keyPushUp = 'each-pushup';
 
   constructor() {
   }
@@ -88,6 +89,20 @@ export class StorageService {
   clear(): StatsInterface {
     localStorage.removeItem(this._key);
     return {total: 0, last30: 0, consecutive: 0, outOf: 0};
+  }
+
+  addPushup(howManyToday: number) {
+    // check todays pushup then add to it
+    const items = JSON.parse(localStorage.getItem(this._keyPushUp));
+    items.push({date: new Date().getTime(), pushUpCount: howManyToday});
+  }
+
+  numberOf100pushupsToday() {
+    return 0;
+  }
+
+  numberOf100pushupsDays() {
+    return 0;
   }
 
 }
