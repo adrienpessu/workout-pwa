@@ -123,7 +123,28 @@ export class StorageService {
   }
 
   numberOf100pushupsDays() {
-    return 0;
+    const items = JSON.parse(localStorage.getItem(this._keyPushUp)) || [];
+    const dateKey = this._currentYearDayOfYear().split('-');
+    const day = dateKey[0];
+    const year = dateKey[1];
+
+    const itemSorted = Object.keys(items)
+      .sort((a, b) => (Number(b.replace('-', '')) - Number(a.replace('-', ''))));
+
+    let keepGoing = true;
+    let index = 0;
+    let pushupCount = 0;
+    while (keepGoing && index < itemSorted.length) {
+      const currentIndex = itemSorted[index];
+      if (items[currentIndex] >= 100) {
+        pushupCount++;
+      } else {
+        keepGoing = false;
+      }
+      index++;
+    }
+
+    return pushupCount;
   }
 
   getPathPref() {
@@ -143,4 +164,6 @@ export class StorageService {
     const day = Math.floor(diff / oneDay);
     return now.getFullYear() + '-' + day;
   }
+
+
 }
