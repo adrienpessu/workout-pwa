@@ -11,20 +11,22 @@ export class PushupComponent implements OnInit {
   completedDays = 0;
   today = 0;
 
-  constructor(private storageServerice: StorageService) {
+  constructor(private storageService: StorageService) {
   }
 
   ngOnInit(): void {
-    this.completedDays = this.storageServerice.numberOf100pushupsDays();
-    this.completedDays = this.storageServerice.numberOf100pushupsToday();
+    this.completedDays = this.storageService.numberOf100pushupsDays();
+    this.today = this.storageService.numberOf100pushupsToday();
   }
 
   plus(toAdd: number) {
     this.today += toAdd;
+    this.storageService.addPushup(toAdd);
   }
 
   reset() {
     this.today = 0;
+    this.storageService.reset();
   }
 
 }

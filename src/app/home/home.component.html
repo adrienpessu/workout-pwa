@@ -1,4 +1,4 @@
 <div class="main-container">
-  <div class="box-container" [routerLink]="['/pushup']"><span>Push-up</span></div>
-  <div class="box-container" [routerLink]="['/plank']"><span>Plank</span></div>
+  <div class="box-container" (click)="navigateTo('/pushup')"><span>Push-up</span></div>
+  <div class="box-container" (click)="navigateTo('/plank')"><span>Plank</span></div>
 </div>

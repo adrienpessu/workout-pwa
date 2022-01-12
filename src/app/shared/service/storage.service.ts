@@ -8,6 +8,7 @@ import {StatsInterface} from '../interface/stats';
 export class StorageService {
 
   private readonly _key = 'each-practice';
+  private readonly _key_path = 'home_path';
   private readonly _keyPushUp = 'each-pushup';
 
   constructor() {
@@ -92,17 +93,54 @@ export class StorageService {
   }
 
   addPushup(howManyToday: number) {
-    // check todays pushup then add to it
-    const items = JSON.parse(localStorage.getItem(this._keyPushUp));
-    items.push({date: new Date().getTime(), pushUpCount: howManyToday});
+    const items = JSON.parse(localStorage.getItem(this._keyPushUp)) || [];
+    const dateKey = this._currentYearDayOfYear();
+
+    if (items[dateKey]) {
+      items[dateKey] = howManyToday + items[dateKey];
+    } else {
+      items[dateKey] = howManyToday;
+    }
+    localStorage.setItem(this._keyPushUp, JSON.stringify({...items}));
   }
 
   numberOf100pushupsToday() {
-    return 0;
+    const items = JSON.parse(localStorage.getItem(this._keyPushUp)) || [];
+    const dateKey = this._currentYearDayOfYear();
+
+    if (items[dateKey]) {
+      return items[dateKey];
+    } else {
+      return 0;
+    }
+  }
+
+  reset() {
+    const items = JSON.parse(localStorage.getItem(this._keyPushUp)) || [];
+    const dateKey = this._currentYearDayOfYear();
+    items[dateKey] = 0;
+    localStorage.setItem(this._keyPushUp, JSON.stringify({...items}));
   }
 
   numberOf100pushupsDays() {
     return 0;
   }
 
+  getPathPref() {
+    return localStorage.getItem(this._key_path);
+  }
+
+
+  setPathPref(path: string) {
+    return localStorage.setItem(this._key_path, path);
+  }
+
+  private _currentYearDayOfYear() {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const diff = (now.getTime() - start.getTime()) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
+    const oneDay = 1000 * 60 * 60 * 24;
+    const day = Math.floor(diff / oneDay);
+    return now.getFullYear() + '-' + day;
+  }
 }

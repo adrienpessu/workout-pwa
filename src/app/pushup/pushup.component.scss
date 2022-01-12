@@ -33,4 +33,21 @@ div.main-container {
     font-size: 4rem;
   }
 
+  div.box-reset {
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: black solid 1px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    margin: 1rem;
+    width: auto;
+    min-height: 6;
+
+    span {
+      font-size: 2rem;
+    }
+  }
+
 }

@@ -1,13 +1,13 @@
 <div class="header main" role="banner">
   <div class="banner">
     <div class="header-inline">
-      <img [routerLink]="['/']"
+      <img (click)="navigateTo('/')"
            width="40"
            alt=" Logo"
            src="assets/icons/sports-24px.svg"
       />
       <h1 [routerLink]="['/']">Workout</h1>
-      <img (click)="reload()"
+      <img (click)="navigateTo('/')"
            width="40"
            alt=" Logo"
            src="assets/svg/refresh.svg"
