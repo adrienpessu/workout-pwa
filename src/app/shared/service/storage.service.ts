@@ -138,7 +138,7 @@ export class StorageService {
       const currentIndex = itemSorted[index];
       if (items[currentIndex] >= 100) {
         pushupCount++;
-      } else {
+      } else if (index !== 0) {
         keepGoing = false;
       }
       index++;
