@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {StorageService} from '../shared/service/storage.service';
 
 @Component({
@@ -27,6 +27,14 @@ export class PushupComponent implements OnInit {
   reset() {
     this.today = 0;
     this.storageService.reset();
+  }
+
+  @HostListener('document:visibilitychange', ['$event'])
+  visibilitychange() {
+    if (!document.hidden) {
+      this.completedDays = this.storageService.numberOf100pushupsDays();
+      this.today = this.storageService.numberOf100pushupsToday();
+    }
   }
 
 }
