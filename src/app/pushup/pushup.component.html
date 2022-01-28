@@ -1,6 +1,6 @@
 <div class="main-container">
 
-  <span>{{ today }}</span>
+  <span>{{ today }} <ng-container *ngIf="today >= 100">🎉</ng-container> </span>
   <div class="box-inline">
     <div class="box-container" (click)="plus(10)"><span>+10</span></div>
     <div class="box-container" (click)="plus(20)"><span>+20</span></div>

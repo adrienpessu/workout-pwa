@@ -22,11 +22,13 @@ export class PushupComponent implements OnInit {
   plus(toAdd: number) {
     this.today += toAdd;
     this.storageService.addPushup(toAdd);
+    this.completedDays = this.storageService.numberOf100pushupsDays();
   }
 
   reset() {
     this.today = 0;
     this.storageService.reset();
+    this.completedDays = this.storageService.numberOf100pushupsDays();
   }
 
   @HostListener('document:visibilitychange', ['$event'])

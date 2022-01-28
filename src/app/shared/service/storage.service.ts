@@ -124,9 +124,7 @@ export class StorageService {
 
   numberOf100pushupsDays() {
     const items = JSON.parse(localStorage.getItem(this._keyPushUp)) || [];
-    const dateKey = this._currentYearDayOfYear().split('-');
-    const day = dateKey[0];
-    const year = dateKey[1];
+    const dateKey = this._currentYearDayOfYear();
 
     const itemSorted = Object.keys(items)
       .sort((a, b) => (Number(b.replace('-', '')) - Number(a.replace('-', ''))));
@@ -138,8 +136,10 @@ export class StorageService {
       const currentIndex = itemSorted[index];
       if (items[currentIndex] >= 100) {
         pushupCount++;
-      } else if (index !== 0) {
-        keepGoing = false;
+      } else if (index !== 0
+        && (parseInt(itemSorted[index - 1].replace('-', ''), 2) + 1) !== parseInt(itemSorted[index].replace('-', ''), 2)) {
+        debugger;
+        keepGoing = dateKey !== itemSorted[0];
       }
       index++;
     }
