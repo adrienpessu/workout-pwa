@@ -138,7 +138,6 @@ export class StorageService {
         pushupCount++;
       } else if (index !== 0
         && (parseInt(itemSorted[index - 1].replace('-', ''), 2) + 1) !== parseInt(itemSorted[index].replace('-', ''), 2)) {
-        debugger;
         keepGoing = dateKey !== itemSorted[0];
       }
       index++;
