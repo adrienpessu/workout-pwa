@@ -1,6 +1,6 @@
 <div class="main-container">
 
-  <span>{{ today }} <ng-container *ngIf="today >= 100">🎉</ng-container> </span>
+  <span>{{ today }} <ng-container *ngIf="today >= 50">🎉</ng-container> </span>
   <div class="box-inline">
     <div class="box-container" (click)="plus(10)"><span>+10</span></div>
     <div class="box-container" (click)="plus(20)"><span>+20</span></div>
@@ -8,7 +8,7 @@
     <div class="box-container" (click)="plus(40)"><span>+40</span></div>
   </div>
   <div>
-    {{ completedDays }} / 100 days
+    {{ completedDays }} / 50 days
   </div>
   <div class="box-reset" (click)="reset()"><span>Reset</span></div>
 </div>

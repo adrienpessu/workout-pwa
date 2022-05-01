@@ -134,7 +134,7 @@ export class StorageService {
     let pushupCount = 0;
     while (keepGoing && index < itemSorted.length) {
       const currentIndex = itemSorted[index];
-      if (items[currentIndex] >= 100) {
+      if (items[currentIndex] >= 50) {
         pushupCount++;
       } else if (index !== 0
         && (parseInt(itemSorted[index - 1].replace('-', ''), 2) + 1) !== parseInt(itemSorted[index].replace('-', ''), 2)) {
